@@ -14,3 +14,10 @@ import tkinter as tk                                                            
 from tkinter.filedialog import askdirectory                                                 # used to open csv file
 from tkinter import StringVar                                                           
 from tkinter import *
+
+
+def main():
+
+# =======================================================================================================================================================
+#                                                           Script lines for Tkinter GUI
+# =======================================================================================================================================================
