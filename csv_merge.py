@@ -23,7 +23,6 @@ def main():
 # =======================================================================================================================================================
 
 
-
     window = tk.Tk()                                                                        # creates a tkinter object
     window.geometry('200x200')                                                              # set size of tkinter window
 
@@ -32,6 +31,15 @@ def main():
 
     def csv_opener():
         """ this function is used for the button to open the csv file """
+
+        global csv_folder
+        csv_folder = askdirectory()                                                         # show an "Open" dialog box and return the path to the selected folder
+
+        end_button = Button(window, text = 'Create', command =window.destroy).pack()        # button to close tkinter window
+                                                                    
+    csv_button = Button(window, text = 'Open Folder', command = csv_opener).pack()
+
+    window.mainloop()            
         
 # =======================================================================================================================================================
 #                                                           Main Function Section
