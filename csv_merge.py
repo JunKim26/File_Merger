@@ -15,12 +15,12 @@ from tkinter.filedialog import askdirectory                                     
 from tkinter import StringVar                                                           
 from tkinter import *
 
-
 def main():
 
 # =======================================================================================================================================================
 #                                                           Script lines for Tkinter GUI
 # =======================================================================================================================================================
+
 
 
     window = tk.Tk()                                                                        # creates a tkinter object
@@ -39,8 +39,8 @@ def main():
                                                                     
     csv_button = Button(window, text = 'Open Folder', command = csv_opener).pack()
 
-    window.mainloop()            
-        
+    window.mainloop()                                                                       # tells Python to run the Tkinter event loop
+
 # =======================================================================================================================================================
 #                                                           Main Function Section
 # =======================================================================================================================================================
@@ -227,7 +227,7 @@ def main():
             'City',
             'State'
             ]
-        
+
 
         hid_csv = hid_csv[hid_csv.columns.intersection(wanted_columns)]                                              # keeps columns in the wanted columns array
         nohid_csv = nohid_csv[nohid_csv.columns.intersection(wanted_columns)]
@@ -245,3 +245,6 @@ def main():
 
 
     csv_merge()
+
+if __name__ == '__main__':
+    main()
