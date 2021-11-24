@@ -99,3 +99,131 @@ def main():
                         'State': 'Billing State/Province'
                             }, inplace=True
                         )
+
+
+    def csv_merge():
+        os.chdir(csv_folder)
+        extension = 'csv'
+        all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
+                                                                                    
+        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ])                  # combine all files in the list
+        csv_df = pd.DataFrame(combined_csv)    
+
+        dt = datetime.now().strftime('%Y.%m.%d-%I%M%S%p')                                   # year_month_day-hours_minutes_seconds_AM/PM ; used in Title                
+        dt_string = str(dt)                                                                 # string of date and time
+        file_name = dt_string +" combined.csv"
+
+        script_dir = os.path.dirname(__file__)                                              # absolute directory the script is in
+        rel_path = 'Output'
+        abs_file_path = os.path.join(script_dir, rel_path)                                  # this joins the absolute path of current script with wanted relative path
+
+        csv_df = csv_df.dropna(axis=1, how='all')                                           # this drops all columns without any values
+ 
+        # ===== Clean up Phone Numbers =========================================
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace(')','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('-','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('#','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('+','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('.','')
+        csv_df['phone_1'] = csv_df['phone_1'].astype(str)
+        csv_df['phone_1'] = csv_df['phone_1'].str.strip()
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('nan','')
+        
+
+# ===== Change Location to City, State =========================================
+
+        df2 = pd.read_csv('../../MASTER Locations.csv', encoding = "ISO-8859-1")
+
+        locationList = csv_df['location_name'].tolist()
+        searchLocationList = df2['Location'].tolist()
+        cityList = df2['City'].tolist()
+        stateList = df2['State'].tolist()
+        finalCity = []
+        finalState = []
+        noLocationData = []
+
+        i = 0
+        while i < len(locationList):
+            try:
+                j = searchLocationList.index(locationList[i])
+                finalCity.append(cityList[j])
+                finalState.append(stateList[j])
+            except:
+                finalCity.append('')
+                finalState.append('')
+                noLocationData.append(locationList[i])
+            i += 1
+            
+        csv_df['City'] = finalCity
+        csv_df['State'] = finalState
+
+# ===== Clean up Company Names =========================================
+
+        companyNamer = pd.read_csv('../../MASTER Company Replacers.csv')
+        DSNames = companyNamer['Duxsoup Company'].tolist()
+        SFNames = companyNamer['Sales Force Company'].tolist()
+
+        z = 0
+        while z < len(DSNames):
+            csv_df = csv_df.replace(DSNames[z], SFNames[z])
+            z += 1
+
+ # =====================================================================
+
+        hid_csv = csv_df[(csv_df.cs_hid.str.len() > 5)]                                     # creates a separate dataframe that contains rows with houshold ids
+        hid_csv = hid_csv.dropna(axis=1, how='all')
+
+        nohid_csv = csv_df[~(csv_df.cs_hid.str.len() > 5)]                                  # creates a separate dataframe that contains rows without household ids
+        nohid_csv = nohid_csv.dropna(axis=1, how='all')
+
+        wanted_columns = [                                                                  # these are the columns to keep in the final csv files
+            'cs_hid', 
+            'profile_url', 
+            'email',
+            'full_name',
+            'first_name',
+            'last_name',
+            'avatar',
+            'industry',
+            'address',
+            'birthday',
+            'organization_1',
+            'organization_title_1',
+            'organization_start_1',
+##          'organization_2',
+##          'organization_title_2',
+##          'organization_3',
+##          'organization_title_3',
+            'education_1',
+##          'education_degree_1',
+##          'education_fos_1',
+            'education_start_1',
+            'education_end_1',
+##          'education_2',
+##          'education_degree_2',
+##          'education_fos_2',
+##          'education_start_2',
+##          'education_end_2',
+##          'education_3',
+##          'education_degree_3',
+##          'education_fos_3',
+##          'education_start_3',
+##          'education_end_3',
+##          'language_1',
+##          'language_proficiency_1',
+##          'language_2',
+##          'language_proficiency_2',
+##          'language_3',
+##          'language_proficiency_3',
+            'languages',
+            'phone_1',
+            'phone_type_1',
+##          'phone_2',
+##          'phone_type_2',
+##          'mutual_first_fullname',
+##          'mutual_second_fullname',
+            'City',
+            'State'
+            ]
