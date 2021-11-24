@@ -227,3 +227,21 @@ def main():
             'City',
             'State'
             ]
+        
+
+        hid_csv = hid_csv[hid_csv.columns.intersection(wanted_columns)]                                              # keeps columns in the wanted columns array
+        nohid_csv = nohid_csv[nohid_csv.columns.intersection(wanted_columns)]
+        csv_df =csv_df[csv_df.columns.intersection(wanted_columns)]
+
+        rename_column(hid_csv)
+        rename_column(nohid_csv)
+        rename_column(csv_df)
+
+        last_path = os.path.basename(os.path.normpath(csv_folder))    
+
+        hid_csv.to_csv("../../Output/Update/" + dt_string +" "+ last_path + " hid exists.csv", index=False, encoding='utf-8-sig')       # exports csv to folder
+        nohid_csv.to_csv("../../Output/Insert/" + dt_string +" "+ last_path + " nohid.csv", index=False, encoding='utf-8-sig')           
+        csv_df.to_csv("../../Output/Combined/"+ dt_string +" "+ last_path + " combined.csv", index=False, encoding='utf-8-sig')            
+
+
+    csv_merge()
