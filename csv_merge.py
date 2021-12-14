@@ -120,7 +120,7 @@ def main():
         csv_df = csv_df.dropna(axis=1, how='all')                                           # this drops all columns without any values
  
         # ===== Clean up Phone Numbers =========================================
-        csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','')
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(')','')
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('-','')
