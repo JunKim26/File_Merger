@@ -121,7 +121,7 @@ def main():
  
         # ===== Clean up Phone Numbers =========================================
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','',regex=True)
-        csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(')','')
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('-','')
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('#','')
