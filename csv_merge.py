@@ -129,7 +129,7 @@ def main():
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('.','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].astype(str)
         csv_df['phone_1'] = csv_df['phone_1'].str.strip()
-        csv_df['phone_1'] = csv_df['phone_1'].str.replace('nan','')
+        csv_df['phone_1'] = csv_df['phone_1'].str.replace('nan','',regex=True)
         
 
 # ===== Change Location to City, State =========================================
