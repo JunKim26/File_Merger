@@ -1,7 +1,7 @@
 # Title : CSV Files Merger
 # Author: Jun Kim
 # Date: 09/24/2021
-# Description: In this program, all the csv files in a directory will be merged into one csv file. 
+# Description: In this program, all the csv files in a directory will be merged into one csv file.
 
 
 import os
@@ -119,7 +119,7 @@ def main():
 
         csv_df = csv_df.dropna(axis=1, how='all')                                           # this drops all columns without any values
  
-        # ===== Clean up Phone Numbers =========================================
+        # ===== Clean up Phone Numbers =========================================            #The phone numbers are standardized by removing special characters as the input phone numbers may vary in formatting.
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(')','',regex=True)
