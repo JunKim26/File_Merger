@@ -132,7 +132,7 @@ def main():
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('nan','',regex=True)
         
 
-# ===== Change Location to City, State =========================================
+        # ===== Change Location to City, State =========================================
 
         df2 = pd.read_csv('../../MASTER Locations.csv', encoding = "ISO-8859-1")
 
@@ -159,7 +159,7 @@ def main():
         csv_df['City'] = finalCity
         csv_df['State'] = finalState
 
-# ===== Clean up Company Names =========================================
+        # ===== Clean up Company Names =========================================
 
         companyNamer = pd.read_csv('../../MASTER Company Replacers.csv')
         DSNames = companyNamer['Duxsoup Company'].tolist()
@@ -170,7 +170,7 @@ def main():
             csv_df = csv_df.replace(DSNames[z], SFNames[z])
             z += 1
 
- # =====================================================================
+        # =====================================================================
 
         hid_csv = csv_df[(csv_df.cs_hid.str.len() > 5)]                                     # creates a separate dataframe that contains rows with houshold ids
         hid_csv = hid_csv.dropna(axis=1, how='all')
