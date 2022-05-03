@@ -8,42 +8,33 @@ import os
 import glob
 import pandas as pd
 import numpy as np
-from datetime import date                                                                   # used to get the current date
+from datetime import date                                                                   
 from datetime import datetime      
-import tkinter as tk                                                                        # used as a user friendly tool for the program
-from tkinter.filedialog import askdirectory                                                 # used to open csv file
+import tkinter as tk                                                                        
+from tkinter.filedialog import askdirectory                                                 
 from tkinter import StringVar                                                           
 from tkinter import *
 
 def main():
 
-# =======================================================================================================================================================
-#                                                           Script lines for Tkinter GUI
-# =======================================================================================================================================================
 
+    window = tk.Tk()                                                                        
+    window.geometry('200x200')                                                              
 
-
-    window = tk.Tk()                                                                        # creates a tkinter object
-    window.geometry('200x200')                                                              # set size of tkinter window
-
-    label = tk.Label(text='CSV Merger')                                                     # sets the text to be dipslayed by tkinter
+    label = tk.Label(text='CSV Merger')                                                     
     label.pack()
 
     def csv_opener():
         """ this function is used for the button to open the csv file """
 
         global csv_folder
-        csv_folder = askdirectory()                                                         # show an "Open" dialog box and return the path to the selected folder
-
-        end_button = Button(window, text = 'Create', command =window.destroy).pack()        # button to close tkinter window
+        csv_folder = askdirectory()                                                         
+        end_button = Button(window, text = 'Create', command =window.destroy).pack()        
                                                                     
     csv_button = Button(window, text = 'Open Folder', command = csv_opener).pack()
 
-    window.mainloop()                                                                       # tells Python to run the Tkinter event loop
+    window.mainloop()                                                                       
 
-# =======================================================================================================================================================
-#                                                           Main Function Section
-# =======================================================================================================================================================
 
     def rename_column(rename_df):
         
@@ -105,21 +96,26 @@ def main():
         os.chdir(csv_folder)
         extension = 'csv'
         all_filenames = [i for i in glob.glob('*.{}'.format(extension))]
-                                                                                    
-        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ])                  # combine all files in the list
+        
+        # combine all files in the list                                                                            
+        combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ])                  
         csv_df = pd.DataFrame(combined_csv)    
-
-        dt = datetime.now().strftime('%Y.%m.%d-%I%M%S%p')                                   # year_month_day-hours_minutes_seconds_AM/PM ; used in Title                
-        dt_string = str(dt)                                                                 # string of date and time
+        
+        # year_month_day-hours_minutes_seconds_AM/PM ; used in Title
+        dt = datetime.now().strftime('%Y.%m.%d-%I%M%S%p')                                   
+        dt_string = str(dt)                                                                 
         file_name = dt_string +" combined.csv"
 
-        script_dir = os.path.dirname(__file__)                                              # absolute directory the script is in
+        script_dir = os.path.dirname(__file__)                                              
         rel_path = 'Output'
-        abs_file_path = os.path.join(script_dir, rel_path)                                  # this joins the absolute path of current script with wanted relative path
-
-        csv_df = csv_df.dropna(axis=1, how='all')                                           # this drops all columns without any values
+        
+        # this joins the absolute path of current script with wanted relative path
+        abs_file_path = os.path.join(script_dir, rel_path)                                  
+        
+        # this drops all columns without any values
+        csv_df = csv_df.dropna(axis=1, how='all')                                           
  
-        # ===== Clean up Phone Numbers =========================================            #The phone numbers are standardized by removing special characters as the input phone numbers may vary in formatting.
+        # clean up Phone Numbers           
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(' ','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('(','',regex=True)
         csv_df['phone_1'] = csv_df['phone_1'].str.replace(')','',regex=True)
@@ -132,7 +128,7 @@ def main():
         csv_df['phone_1'] = csv_df['phone_1'].str.replace('nan','',regex=True)
         
 
-        # ===== Change Location to City, State =========================================
+        # change Location to City, State
 
         df2 = pd.read_csv('../../MASTER Locations.csv', encoding = "ISO-8859-1")
 
@@ -159,7 +155,7 @@ def main():
         csv_df['City'] = finalCity
         csv_df['State'] = finalState
 
-        # ===== Clean up Company Names =========================================
+        # clean up Company Names 
 
         companyNamer = pd.read_csv('../../MASTER Company Replacers.csv')
         DSNames = companyNamer['Duxsoup Company'].tolist()
@@ -169,16 +165,18 @@ def main():
         while z < len(DSNames):
             csv_df = csv_df.replace(DSNames[z], SFNames[z])
             z += 1
-
-        # =====================================================================
-
-        hid_csv = csv_df[(csv_df.cs_hid.str.len() > 5)]                                     # creates a separate dataframe that contains rows with houshold ids
+            
+        
+         # creates a separate dataframe that contains rows with houshold ids
+        hid_csv = csv_df[(csv_df.cs_hid.str.len() > 5)]                                     
         hid_csv = hid_csv.dropna(axis=1, how='all')
-
-        nohid_csv = csv_df[~(csv_df.cs_hid.str.len() > 5)]                                  # creates a separate dataframe that contains rows without household ids
+        
+        # creates a separate dataframe that contains rows without household ids
+        nohid_csv = csv_df[~(csv_df.cs_hid.str.len() > 5)]                                  
         nohid_csv = nohid_csv.dropna(axis=1, how='all')
-
-        wanted_columns = [                                                                  # these are the columns to keep in the final csv files
+        
+        # these are the columns to keep in the final csv files
+        wanted_columns = [                                                                  
             'cs_hid', 
             'profile_url', 
             'email',
@@ -228,8 +226,9 @@ def main():
             'State'
             ]
 
-
-        hid_csv = hid_csv[hid_csv.columns.intersection(wanted_columns)]                                              # keeps columns in the wanted columns array
+        
+        # keeps columns in the wanted columns array
+        hid_csv = hid_csv[hid_csv.columns.intersection(wanted_columns)]                                             
         nohid_csv = nohid_csv[nohid_csv.columns.intersection(wanted_columns)]
         csv_df =csv_df[csv_df.columns.intersection(wanted_columns)]
 
@@ -238,8 +237,9 @@ def main():
         rename_column(csv_df)
 
         last_path = os.path.basename(os.path.normpath(csv_folder))    
-
-        hid_csv.to_csv("../../Output/Update/" + dt_string +" "+ last_path + " hid exists.csv", index=False, encoding='utf-8-sig')       # exports csv to folder
+        
+        # exports csv to folder
+        hid_csv.to_csv("../../Output/Update/" + dt_string +" "+ last_path + " hid exists.csv", index=False, encoding='utf-8-sig')       
         nohid_csv.to_csv("../../Output/Insert/" + dt_string +" "+ last_path + " nohid.csv", index=False, encoding='utf-8-sig')           
         csv_df.to_csv("../../Output/Combined/"+ dt_string +" "+ last_path + " combined.csv", index=False, encoding='utf-8-sig')            
 
