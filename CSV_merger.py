@@ -61,7 +61,8 @@ def main():
         csv_df = csv_df.dropna(axis=1, how='all')                                          
 
         last_path = os.path.basename(os.path.normpath(csv_folder))    
-
+        
+        # puts output file in folder "Output
         csv_df.to_csv("../../Output/"+ dt_string +" "+ last_path + " combined.csv", index=False, encoding='utf-8-sig')            
 
 
